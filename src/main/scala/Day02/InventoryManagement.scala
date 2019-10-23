@@ -1,7 +1,7 @@
 package Day02
 
 import scala.annotation.tailrec
-import scala.io.Source
+import utils.Utils.readFile
 
 object InventoryManagement {
   def main(args: Array[String]): Unit = {
@@ -12,13 +12,6 @@ object InventoryManagement {
 
     println(checksum)
     println(commonLetters)
-  }
-
-  def readFile(filename: String): List[String] = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines.toList
-    bufferedSource.close
-    lines
   }
 
   def getCharCounts(ids: List[String]): List[Set[Int]] =

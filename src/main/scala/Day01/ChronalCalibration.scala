@@ -1,7 +1,7 @@
 package Day01
 
 import scala.annotation.tailrec
-import scala.io.Source
+import utils.Utils.readFile
 
 object ChronalCalibration {
   def main(args: Array[String]): Unit = {
@@ -10,13 +10,6 @@ object ChronalCalibration {
     val frequencyTwice = calculateFrequencyTwice(frequencies)
     println("Part one: " + frequency)
     println("Part two: " + frequencyTwice)
-  }
-
-  def readFile(filename: String): List[String] = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines.toList
-    bufferedSource.close
-    lines
   }
 
   def calculateFrequency(list: List[String]): Int =

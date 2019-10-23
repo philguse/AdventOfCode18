@@ -1,7 +1,7 @@
 package Day03
 
 import scala.annotation.tailrec
-import scala.io.Source
+import utils.Utils.readFile
 
 case class Claim(id: String, x1: Int, y1: Int, x2: Int, y2: Int)
 
@@ -13,13 +13,6 @@ object FabricOverlapping {
     val notOverlappingClaim = getNotOverlappingClaim(claims)
     println(overlappingSquares.size)
     println(notOverlappingClaim)
-  }
-
-  private def readFile(filename: String): List[String] = {
-    val bufferedSource = Source.fromFile(filename)
-    val lines = bufferedSource.getLines.toList
-    bufferedSource.close
-    lines
   }
 
   private def convertToClaims(lines: List[String]): List[Claim] = {
