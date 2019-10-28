@@ -16,10 +16,15 @@ object ReposeRecord {
     val shifts = convertToShifts(sortedEntries)
     val groupedShifts = groupShifts(shifts)
     val mostSleepingGuard = findMostSleepingGuard(groupedShifts)
+    val mostSleepingGuardInOneMinute = findMostSleepingGuardInOneMinute(groupedShifts)
+    val mostSleptMinute = getMostSleptMinute(groupedShifts(mostSleepingGuard))
+
+    val result = mostSleepingGuard.toInt * mostSleptMinute._1
+    val result2 = mostSleepingGuardInOneMinute._1.toInt * mostSleepingGuardInOneMinute._2._1
     println("Most sleeping guard: #" + mostSleepingGuard)
-    val mostSleptMinute = getMostSleptMinute(groupedShifts, mostSleepingGuard)
-    val result = mostSleepingGuard.toInt * mostSleptMinute
-    println("Result: " + mostSleepingGuard + " * " + mostSleptMinute + " = " + result)
+    println("Result: " + mostSleepingGuard + " * " + mostSleptMinute._1 + " = " + result)
+    println("Most sleeping guard in one minute: #" + mostSleepingGuardInOneMinute._1)
+    println("Result: " + mostSleepingGuardInOneMinute + " * " + mostSleepingGuardInOneMinute._2._1 + " = " + result2)
   }
 
   private def convertToEntries(lines: List[String]): List[Entry] = {
@@ -74,9 +79,18 @@ object ReposeRecord {
     countTimeAsleep.maxBy(_._2)._1
   }
 
-  private def getMostSleptMinute(groupedShifts: Map[String, List[Shift]], guardId: String): Int = {
-    val shifts = groupedShifts(guardId)
+  private def getMostSleptMinute(shifts: List[Shift]): (Int, Int) = {
     val countMinutes = shifts.flatMap(_.minutesSlept).groupBy(minute => minute)
-    countMinutes.maxBy(_._2.length)._1
+    if (countMinutes.isEmpty) (-1, 0)
+    else {
+      val mostSleptMinute = countMinutes.maxBy(_._2.length)
+      (mostSleptMinute._1, mostSleptMinute._2.length)
+    }
+  }
+
+  private def findMostSleepingGuardInOneMinute(shiftsPerGuard: Map[String, List[Shift]]): (String, (Int, Int)) = {
+    val test = shiftsPerGuard.map(shift => (shift._1, getMostSleptMinute(shift._2)))
+    val mostSleepingGuardInOneMinute = test.maxBy(_._2._2)
+    mostSleepingGuardInOneMinute
   }
 }
