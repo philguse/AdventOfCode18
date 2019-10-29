@@ -3,14 +3,12 @@ package Day01
 import scala.annotation.tailrec
 import utils.Utils.readFile
 
-object ChronalCalibration {
-  def main(args: Array[String]): Unit = {
-    val frequencies = readFile("src/main/scala/Day01/input.txt")
-    val frequency = calculateFrequency(frequencies)
-    val frequencyTwice = calculateFrequencyTwice(frequencies)
-    println("Part one: " + frequency)
-    println("Part two: " + frequencyTwice)
-  }
+object ChronalCalibration extends App {
+  val frequencies = readFile("Day01/input.txt")
+  val frequency = calculateFrequency(frequencies)
+  val frequencyTwice = calculateFrequencyTwice(frequencies)
+  println("Part one: " + frequency)
+  println("Part two: " + frequencyTwice)
 
   def calculateFrequency(list: List[String]): Int =
     list.foldLeft(0){_ + _.toInt}

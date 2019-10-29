@@ -10,22 +10,20 @@ case class Shift(guardId: String, timeAsleep: Int, minutesSlept: List[Int])
 case class Guard(guardId: String, shifts: List[Shift])
 case class Minute(value: Int, times: Int)
 
-object ReposeRecord {
-  def main(args: Array[String]): Unit = {
-    val lines = readFile("src/main/scala/Day04/input.txt")
-    val entries = convertToEntries(lines)
-    val sortedEntries = sortEntries(entries)
-    val shifts = convertToShifts(sortedEntries)
-    val guards = assignShiftsToGuards(shifts)
+object ReposeRecord extends App {
+  val lines = readFile("Day04/input.txt")
+  val entries = convertToEntries(lines)
+  val sortedEntries = sortEntries(entries)
+  val shifts = convertToShifts(sortedEntries)
+  val guards = assignShiftsToGuards(shifts)
 
-    val mostSleepingGuard = findMostSleepingGuard(guards).get
-    val mostSleptMinute1 = getMostSleptMinute(mostSleepingGuard.shifts)
-    val mostSleepingGuardOnSameMinute = findMostSleepingGuardOnSameMinute(guards).get
-    val mostSleptMinute2 = getMostSleptMinute(mostSleepingGuardOnSameMinute.shifts)
+  val mostSleepingGuard = findMostSleepingGuard(guards).get
+  val mostSleptMinute1 = getMostSleptMinute(mostSleepingGuard.shifts)
+  val mostSleepingGuardOnSameMinute = findMostSleepingGuardOnSameMinute(guards).get
+  val mostSleptMinute2 = getMostSleptMinute(mostSleepingGuardOnSameMinute.shifts)
 
-    printResult(mostSleepingGuard, mostSleptMinute1)
-    printResult(mostSleepingGuardOnSameMinute, mostSleptMinute2)
-  }
+  printResult(mostSleepingGuard, mostSleptMinute1)
+  printResult(mostSleepingGuardOnSameMinute, mostSleptMinute2)
 
   private def printResult(guard: Guard, minute: Minute): Unit = {
     val result = guard.guardId.toInt * minute.value

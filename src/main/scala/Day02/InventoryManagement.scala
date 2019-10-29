@@ -3,16 +3,14 @@ package Day02
 import scala.annotation.tailrec
 import utils.Utils.readFile
 
-object InventoryManagement {
-  def main(args: Array[String]): Unit = {
-    val ids = readFile("src/main/scala/Day02/input.txt")
-    val charCounts = getCharCounts(ids)
-    val checksum = calculateChecksum(charCounts)
-    val commonLetters = findCommonLetters(ids)
+object InventoryManagement extends App {
+  val ids = readFile("Day02/input.txt")
+  val charCounts = getCharCounts(ids)
+  val checksum = calculateChecksum(charCounts)
+  val commonLetters = findCommonLetters(ids)
 
-    println(checksum)
-    println(commonLetters)
-  }
+  println(checksum)
+  println(commonLetters)
 
   def getCharCounts(ids: List[String]): List[Set[Int]] =
     ids.map(id =>

@@ -5,15 +5,13 @@ import utils.Utils.readFile
 
 case class Claim(id: String, x1: Int, y1: Int, x2: Int, y2: Int)
 
-object FabricOverlapping {
-  def main(args: Array[String]): Unit = {
-    val lines = readFile("src/main/scala/Day03/input.txt")
-    val claims = convertToClaims(lines)
-    val overlappingSquares = getOverlappingSquares(claims)
-    val notOverlappingClaim = getNotOverlappingClaim(claims)
-    println(overlappingSquares.size)
-    println(notOverlappingClaim)
-  }
+object FabricOverlapping extends App {
+  val lines = readFile("Day03/input.txt")
+  val claims = convertToClaims(lines)
+  val overlappingSquares = getOverlappingSquares(claims)
+  val notOverlappingClaim = getNotOverlappingClaim(claims)
+  println(overlappingSquares.size)
+  println(notOverlappingClaim)
 
   private def convertToClaims(lines: List[String]): List[Claim] = {
     def extractValues(valueString: String, seperator: String): (Int, Int) = {
