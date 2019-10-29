@@ -17,13 +17,13 @@ object ReposeRecord extends App {
   val shifts = convertToShifts(sortedEntries)
   val guards = assignShiftsToGuards(shifts)
 
-  val mostSleepingGuard = findMostSleepingGuard(guards).get
-  val mostSleptMinute1 = getMostSleptMinute(mostSleepingGuard.shifts)
-  val mostSleepingGuardOnSameMinute = findMostSleepingGuardOnSameMinute(guards).get
-  val mostSleptMinute2 = getMostSleptMinute(mostSleepingGuardOnSameMinute.shifts)
+  val guard1 = firstStrategy(guards).get
+  val mostSleptMinute1 = getMostSleptMinute(guard1.shifts)
+  val guard2 = secondStrategy(guards).get
+  val mostSleptMinute2 = getMostSleptMinute(guard2.shifts)
 
-  printResult(mostSleepingGuard, mostSleptMinute1)
-  printResult(mostSleepingGuardOnSameMinute, mostSleptMinute2)
+  printResult(guard1, mostSleptMinute1)
+  printResult(guard2, mostSleptMinute2)
 
   private def printResult(guard: Guard, minute: Minute): Unit = {
     val result = guard.guardId.toInt * minute.value
@@ -76,17 +76,29 @@ object ReposeRecord extends App {
     (dateFormat.format(fallAsleepTime).toInt until dateFormat.format(awakeningTime).toInt).toList
   }
 
-  private def assignShiftsToGuards(shifts: List[Shift]): List[Guard] =
+  private def assignShiftsToGuards(shifts: List[Shift]): List[Guard] = {
     shifts.groupBy(_.guardId)
       .map {case (guardId, shifts) => Guard(guardId, shifts)}
       .toList
+  }
 
-  private def findMostSleepingGuard(guards: List[Guard]): Option[Guard] = {
+  /**
+   * Strategy 1: Find the guard that was the most minutes asleep.
+   * @param guards List of all guards
+   * @return
+   */
+  private def firstStrategy(guards: List[Guard]): Option[Guard] = {
     val countTimeAsleep = guards.map(guard => (guard.guardId, guard.shifts.foldLeft(0)(_ + _.timeAsleep)))
     guards.find(_.guardId == countTimeAsleep.maxBy(_._2)._1)
   }
 
-  private def findMostSleepingGuardOnSameMinute(guards: List[Guard]): Option[Guard] = {
+  /**
+   * Strategy 2: Of all guards, which guard is most frequently asleep on the same minute?
+   *
+   * @param guards List of all guards
+   * @return
+   */
+  private def secondStrategy(guards: List[Guard]): Option[Guard] = {
     val countMinuteAsleep = guards.map(guard => (guard.guardId, getMostSleptMinute(guard.shifts)))
     guards.find(_.guardId == countMinuteAsleep.maxBy(_._2.times)._1)
   }
