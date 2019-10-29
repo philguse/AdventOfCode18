@@ -7,6 +7,8 @@ import utils.Utils.readFile
 
 case class Entry(date: Date, message: String)
 case class Shift(guardId: String, timeAsleep: Int, minutesSlept: List[Int])
+case class Guard(guardId: String, shifts: List[Shift])
+case class Minute(value: Int, times: Int)
 
 object ReposeRecord {
   def main(args: Array[String]): Unit = {
@@ -14,17 +16,21 @@ object ReposeRecord {
     val entries = convertToEntries(lines)
     val sortedEntries = sortEntries(entries)
     val shifts = convertToShifts(sortedEntries)
-    val groupedShifts = groupShifts(shifts)
-    val mostSleepingGuard = findMostSleepingGuard(groupedShifts)
-    val mostSleepingGuardInOneMinute = findMostSleepingGuardInOneMinute(groupedShifts)
-    val mostSleptMinute = getMostSleptMinute(groupedShifts(mostSleepingGuard))
+    val guards = assignShiftsToGuards(shifts)
 
-    val result = mostSleepingGuard.toInt * mostSleptMinute._1
-    val result2 = mostSleepingGuardInOneMinute._1.toInt * mostSleepingGuardInOneMinute._2._1
-    println("Most sleeping guard: #" + mostSleepingGuard)
-    println("Result: " + mostSleepingGuard + " * " + mostSleptMinute._1 + " = " + result)
-    println("Most sleeping guard in one minute: #" + mostSleepingGuardInOneMinute._1)
-    println("Result: " + mostSleepingGuardInOneMinute + " * " + mostSleepingGuardInOneMinute._2._1 + " = " + result2)
+    val mostSleepingGuard = findMostSleepingGuard(guards).get
+    val mostSleptMinute1 = getMostSleptMinute(mostSleepingGuard.shifts)
+    val mostSleepingGuardOnSameMinute = findMostSleepingGuardOnSameMinute(guards).get
+    val mostSleptMinute2 = getMostSleptMinute(mostSleepingGuardOnSameMinute.shifts)
+
+    printResult(mostSleepingGuard, mostSleptMinute1)
+    printResult(mostSleepingGuardOnSameMinute, mostSleptMinute2)
+  }
+
+  private def printResult(guard: Guard, minute: Minute): Unit = {
+    val result = guard.guardId.toInt * minute.value
+    println("Guard: #" + guard.guardId)
+    println("Result: " + guard.guardId + " * " + minute.value + " = " + result)
   }
 
   private def convertToEntries(lines: List[String]): List[Entry] = {
@@ -60,6 +66,8 @@ object ReposeRecord {
     loop(entries, "", 0, List(), List())
   }
 
+  private def getGuardId(message: String): String = message.replaceAll("[^\\d]", "")
+
   private def getTimeAsleep(a: Date, b: Date): Int = {
     val dateFormat = new SimpleDateFormat("mm")
     Math.abs(dateFormat.format(a).toInt - dateFormat.format(b).toInt)
@@ -70,27 +78,27 @@ object ReposeRecord {
     (dateFormat.format(fallAsleepTime).toInt until dateFormat.format(awakeningTime).toInt).toList
   }
 
-  private def getGuardId(message: String): String = message.replaceAll("[^\\d]", "")
+  private def assignShiftsToGuards(shifts: List[Shift]): List[Guard] =
+    shifts.groupBy(_.guardId)
+      .map {case (guardId, shifts) => Guard(guardId, shifts)}
+      .toList
 
-  private def groupShifts(shifts: List[Shift]): Map[String, List[Shift]] = shifts.groupBy(_.guardId)
-
-  private def findMostSleepingGuard(shiftsPerGuard: Map[String, List[Shift]]): String = {
-    val countTimeAsleep = shiftsPerGuard.map(entry => (entry._1, entry._2.foldLeft(0)(_ + _.timeAsleep)))
-    countTimeAsleep.maxBy(_._2)._1
+  private def findMostSleepingGuard(guards: List[Guard]): Option[Guard] = {
+    val countTimeAsleep = guards.map(guard => (guard.guardId, guard.shifts.foldLeft(0)(_ + _.timeAsleep)))
+    guards.find(_.guardId == countTimeAsleep.maxBy(_._2)._1)
   }
 
-  private def getMostSleptMinute(shifts: List[Shift]): (Int, Int) = {
+  private def findMostSleepingGuardOnSameMinute(guards: List[Guard]): Option[Guard] = {
+    val countMinuteAsleep = guards.map(guard => (guard.guardId, getMostSleptMinute(guard.shifts)))
+    guards.find(_.guardId == countMinuteAsleep.maxBy(_._2.times)._1)
+  }
+
+  private def getMostSleptMinute(shifts: List[Shift]): Minute = {
     val countMinutes = shifts.flatMap(_.minutesSlept).groupBy(minute => minute)
-    if (countMinutes.isEmpty) (-1, 0)
+    if (countMinutes.isEmpty) Minute(-1, 0)
     else {
       val mostSleptMinute = countMinutes.maxBy(_._2.length)
-      (mostSleptMinute._1, mostSleptMinute._2.length)
+      Minute(mostSleptMinute._1, mostSleptMinute._2.length)
     }
-  }
-
-  private def findMostSleepingGuardInOneMinute(shiftsPerGuard: Map[String, List[Shift]]): (String, (Int, Int)) = {
-    val test = shiftsPerGuard.map(shift => (shift._1, getMostSleptMinute(shift._2)))
-    val mostSleepingGuardInOneMinute = test.maxBy(_._2._2)
-    mostSleepingGuardInOneMinute
   }
 }
