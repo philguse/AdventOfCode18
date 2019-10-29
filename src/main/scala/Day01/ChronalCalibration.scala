@@ -6,19 +6,18 @@ import utils.Utils.readFile
 object ChronalCalibration extends App {
   val frequencies = readFile("Day01/input.txt")
   val frequency = calculateFrequency(frequencies)
-  val frequencyTwice = calculateFrequencyTwice(frequencies)
+  val frequencyTwice = calculateFrequencyThatOccursTwice(frequencies)
   println("Part one: " + frequency)
   println("Part two: " + frequencyTwice)
 
-  def calculateFrequency(list: List[String]): Int =
-    list.foldLeft(0){_ + _.toInt}
+  def calculateFrequency(list: List[String]): Int = list.foldLeft(0){_ + _.toInt}
 
-  def calculateFrequencyTwice(list: List[String]): Int = {
+  def calculateFrequencyThatOccursTwice(list: List[String]): Int = {
     @tailrec
-    def loop(reachedFrequencies: Set[Int], acc: Int, index: Int): Int = {
-      if (reachedFrequencies.contains(acc)) acc
-      else if (index + 1 < list.length) loop(reachedFrequencies + acc, acc + list(index).toInt, index + 1)
-      else loop(reachedFrequencies + acc, acc + list(index).toInt, 0)
+    def loop(reachedFrequencies: Set[Int], currentFrequency: Int, index: Int): Int = {
+      if (reachedFrequencies.contains(currentFrequency)) currentFrequency
+      else if (index + 1 < list.length) loop(reachedFrequencies + currentFrequency, currentFrequency + list(index).toInt, index + 1)
+      else loop(reachedFrequencies + currentFrequency, currentFrequency + list(index).toInt, 0)
     }
 
     loop(Set(), 0, 0)

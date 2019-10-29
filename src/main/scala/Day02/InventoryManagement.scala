@@ -12,12 +12,13 @@ object InventoryManagement extends App {
   println(checksum)
   println(commonLetters)
 
-  def getCharCounts(ids: List[String]): List[Set[Int]] =
+  def getCharCounts(ids: List[String]): List[Set[Int]] = {
     ids.map(id =>
       id.groupBy(char => char)
         .map(_._2.length)
         .toSet
     )
+  }
 
   def calculateChecksum(charCounts: List[Set[Int]]): Int = {
     @tailrec
@@ -34,12 +35,14 @@ object InventoryManagement extends App {
     loop(0, 0, charCounts)
   }
 
-  def findCommonLetters(strings: List[String]): List[String] = (for {
+  def findCommonLetters(strings: List[String]): List[String] = {
+    (for {
       a <- strings.indices
       b <- a + 1 until strings.length
       if getDifferenceCount(strings(a), strings(b)) == 1
     } yield getCommonLetters(strings(a), strings(b)))
-    .toList
+      .toList
+  }
 
   def getDifferenceCount(a: String, b: String): Int = {
     @tailrec
