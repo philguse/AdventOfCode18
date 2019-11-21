@@ -85,7 +85,7 @@ object ReposeRecord extends App {
   /**
    * Strategy 1: Find the guard that was the most minutes asleep.
    * @param guards List of all guards
-   * @return
+   * @return Option[Guard]
    */
   private def firstStrategy(guards: List[Guard]): Option[Guard] = {
     val countTimeAsleep = guards.map(guard => (guard.guardId, guard.shifts.foldLeft(0)(_ + _.timeAsleep)))
@@ -96,7 +96,7 @@ object ReposeRecord extends App {
    * Strategy 2: Of all guards, which guard is most frequently asleep on the same minute?
    *
    * @param guards List of all guards
-   * @return
+   * @return Option[Guard]
    */
   private def secondStrategy(guards: List[Guard]): Option[Guard] = {
     val countMinuteAsleep = guards.map(guard => (guard.guardId, getMostSleptMinute(guard.shifts)))
