@@ -9,8 +9,9 @@ object InventoryManagement extends App {
   val checksum = calculateChecksum(charCounts)
   val commonLetters = findCommonLetters(ids)
 
-  println(checksum)
-  println(commonLetters)
+  // Results
+  println(s"Part 01: $checksum")
+  println(s"Part 02: $commonLetters")
 
   def getCharCounts(ids: List[String]): List[Set[Int]] = {
     ids.map(id =>

@@ -22,13 +22,16 @@ object ReposeRecord extends App {
   val guard2 = secondStrategy(guards).get
   val mostSleptMinute2 = getMostSleptMinute(guard2.shifts)
 
+  // Results
+  println("Part 01:")
   printResult(guard1, mostSleptMinute1)
+  println("Part 02:")
   printResult(guard2, mostSleptMinute2)
 
   private def printResult(guard: Guard, minute: Minute): Unit = {
     val result = guard.guardId.toInt * minute.value
-    println("Guard: #" + guard.guardId)
-    println("Result: " + guard.guardId + " * " + minute.value + " = " + result)
+    println("  Guard #" + guard.guardId)
+    println("  Result: " + guard.guardId + " * " + minute.value + " = " + result)
   }
 
   private def convertToEntries(lines: List[String]): List[Entry] = {

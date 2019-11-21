@@ -9,7 +9,7 @@ object AlchemicalReduction extends App {
   val improvedPolymers = getImprovedPolymers(polymer)
   val optimalPolymer = findOptimalPolymer(improvedPolymers)
 
-  // Result
+  // Results
   println(s"Part 01: ${reducedPolymer.length}")
   println(s"Part 02: ${optimalPolymer.length}")
 

@@ -10,8 +10,10 @@ object FabricOverlapping extends App {
   val claims = convertToClaims(lines)
   val overlappingSquares = getOverlappingSquares(claims)
   val notOverlappingClaim = getNotOverlappingClaim(claims)
-  println(overlappingSquares.size)
-  println(notOverlappingClaim)
+
+  // Results
+  println(s"Part 01: ${overlappingSquares.size}")
+  println(s"Part 02: $notOverlappingClaim")
 
   private def convertToClaims(lines: List[String]): List[Claim] = {
     def extractValues(valueString: String, seperator: String): (Int, Int) = {

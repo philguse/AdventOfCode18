@@ -7,8 +7,10 @@ object ChronalCalibration extends App {
   val frequencies = readFile("Day01/input.txt")
   val frequency = calculateFrequency(frequencies)
   val frequencyTwice = calculateFrequencyThatOccursTwice(frequencies)
-  println("Part one: " + frequency)
-  println("Part two: " + frequencyTwice)
+
+  // Results
+  println("Part 01: " + frequency)
+  println("Part 02: " + frequencyTwice)
 
   def calculateFrequency(list: List[String]): Int = list.foldLeft(0){_ + _.toInt}
 
