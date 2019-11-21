@@ -4,11 +4,19 @@ import scala.annotation.tailrec
 import utils.Utils.readFile
 
 object AlchemicalReduction extends App {
-  val line = readFile("Day05/input.txt").head
-  val reducedPolymer = reducePolymer(line)
+  val polymer = readFile("Day05/input.txt").head
+  val reducedPolymer = reducePolymer(polymer)
+  val improvedPolymers = getImprovedPolymers(polymer)
+  val optimalPolymer = findOptimalPolymer(improvedPolymers)
 
   // Result
   println(s"Part 01: ${reducedPolymer.length}")
+  println(s"Part 02: ${optimalPolymer.length}")
+
+  private def getImprovedPolymers(polymer: String): List[String] =
+    (for {
+      unitToRemove <- 'a' to 'z'
+    } yield reducePolymer(removeUnit(polymer, unitToRemove))).toList
 
   private def reducePolymer(polymer: String): String = {
     @tailrec
@@ -31,7 +39,15 @@ object AlchemicalReduction extends App {
     loop(polymer, reduced = false, 0)
   }
 
-  private def isSameType(unitA: Char, unitB: Char): Boolean = unitA.toUpper == unitB.toUpper
+  private def removeUnit(polymer: String, unitToRemove: Char): String =
+    polymer.filter(unit => unit != unitToRemove.toUpper && unit != unitToRemove.toLower)
 
-  private def isOppositePolarity(unitA: Char, unitB: Char): Boolean = unitA.isLower && unitB.isUpper || unitA.isUpper && unitB.isLower
+  private def findOptimalPolymer(polymers: List[String]): String =
+    polymers.minBy(_.length)
+
+  private def isSameType(unitA: Char, unitB: Char): Boolean =
+    unitA.toUpper == unitB.toUpper
+
+  private def isOppositePolarity(unitA: Char, unitB: Char): Boolean =
+    unitA.isLower && unitB.isUpper || unitA.isUpper && unitB.isLower
 }
